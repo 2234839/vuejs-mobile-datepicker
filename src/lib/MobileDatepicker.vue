@@ -1,129 +1,120 @@
 <template>
   <div id="mobile-datepicker" v-show="showPickerModel" @click.self="handleCancel">
     <div class="mdp_container">
-      <!-- 组件头部开始 -->
-      <div class="mdp_header">
-        <div
-          class="mdp_current_year"
-          :class="{'active':changeContentFlag}"
-          @click="showYearPicker()"
-        >{{currentYear}}{{isEnglish?"":"年"}}</div>
+      <div des="组件头部" class="mdp_header">
+        <div class="mdp_current_year" :class="{ active: changeContentFlag }" @click="showYearPicker()">
+          {{ currentYear }}{{ isEnglish ? "" : "年" }}
+        </div>
         <br />
-        <div
-          class="mdp_current_date"
-          :class="{'active':!changeContentFlag}"
-          @click="showDatePicker()"
-        >{{currentDateText}}</div>
+        <div class="mdp_current_date" :class="{ active: !changeContentFlag }" @click="showDatePicker()">
+          {{ currentDateText }}
+        </div>
       </div>
-      <!-- 组件头部结束 -->
-      <!-- 组件主体内容开始 -->
-      <div class="mdp_content">
-        <!-- 组件日期主体内容开始 -->
-        <div class="mdp_date_content" v-show="!changeContentFlag">
+      <div des="组件主体内容" class="mdp_content">
+        <div des="组件日期主体内容" class="mdp_date_content" v-show="!changeContentFlag">
           <div class="mdp_switch_month">
             <span
               class="mdp_left mdp_arrow"
-              :class="{'mdp_arrow_hide':startDate-new Date(year,month,1)>=0}"
+              :class="{ mdp_arrow_hide: startDate - new Date(year, month, 1) >= 0 }"
               @click="preMonth"
             ></span>
-            <span class="mdp_current_month">{{currentMonthText}}</span>
+            <span class="mdp_current_month">{{ currentMonthText }}</span>
             <span
               class="mdp_right mdp_arrow"
-              :class="{'mdp_arrow_hide':endDate-new Date(year,month+1,1)<=0}"
+              :class="{ mdp_arrow_hide: endDate - new Date(year, month + 1, 1) <= 0 }"
               @click="nextMonth"
             ></span>
           </div>
           <div class="mdp_weeks">
             <span
               class="mdp_week"
-              :class="{'mark':markWeekend&&(index==0||index==6)}"
-              v-for="(item,index) in isEnglish?enShortWeeks:weeks"
+              :class="{ mark: markWeekend && (index == 0 || index == 6) }"
+              v-for="(item, index) in isEnglish ? enShortWeeks : weeks"
               :key="index"
-            >{{isEnglish?item[0]:item}}</span>
+              >{{ isEnglish ? item[0] : item }}</span
+            >
           </div>
           <div class="mdp_pick_day">
             <span
               class="mdp_day"
-              :class="{'active':activeDay(item),'mdp_day_disable':dayIsDisable(item),'mark': markWeekend&&dayIsWeekend(index)}"
-              v-for="(item,index) in days"
+              :class="{
+                active: activeDay(item),
+                mdp_day_disable: dayIsDisable(item),
+                mark: markWeekend && dayIsWeekend(index),
+              }"
+              v-for="(item, index) in days"
               :key="index"
               @click="handleClickDay(item)"
-            >{{item?item:' '}}</span>
+              >{{ item ? item : " " }}</span
+            >
           </div>
         </div>
-        <!-- 组件年份主体内容结束 -->
         <div class="mdp_year_content" v-show="changeContentFlag">
           <ul ref="mdp_year_list">
             <li
-              v-for="(item,index) in years"
+              v-for="(item, index) in years"
               :key="index"
-              :class="{'active':item==currentYear}"
+              :class="{ active: item == currentYear }"
               @click="handleClickYear(item)"
-            >{{item}}</li>
+            >
+              {{ item }}
+            </li>
           </ul>
         </div>
       </div>
-      <!-- 组件主体内容结束 -->
-      <!-- 组件操作按钮开始 -->
-      <div class="mdp_operate_button">
-        <button
-          class="mdp_cancel_button mdp_button"
-          @click="handleCancel"
-        >{{isEnglish?"CANCEL":"取消"}}</button>
-        <button
-          class="mdp_sure_button mdp_button"
-          @click="handleConfirm"
-        >{{isEnglish?"CONFIRM":"确认"}}</button>
+      <div des="组件操作按钮" class="mdp_operate_button">
+        <button class="mdp_cancel_button mdp_button" @click="handleCancel">{{ isEnglish ? "CANCEL" : "取消" }}</button>
+        <button class="mdp_sure_button mdp_button" @click="handleConfirm">{{ isEnglish ? "CONFIRM" : "确认" }}</button>
       </div>
-      <!-- 组件操作按钮结束 -->
     </div>
   </div>
 </template>
- 
+
 <script>
+// https://github.com/J1ong/vuejs-mobile-datepicker
 export default {
   name: "MobileDatepicker",
   props: {
     showPickerModel: {
       //控制显隐
       type: Boolean,
-      default: false
+      default: false,
     },
     defaultDate: {
       //默认选中日期
       type: Date,
       default: () => {
         return new Date();
-      }
+      },
     },
     startDate: {
       //可选范围开始日期
       type: Date,
       default: () => {
         return new Date("1900-1-1");
-      }
+      },
     },
     endDate: {
       //可选范围结束日期
       type: Date,
       default: () => {
         return new Date();
-      }
+      },
     },
     disableDate: {
       //禁用日期函数
-      type: Function
+      type: Function,
     },
     markWeekend: {
       //标记周末
       type: Boolean,
-      default: false
+      default: false,
     },
     language: {
       //语言
       type: String,
-      default: "Chinese"
-    }
+      default: "Chinese",
+    },
   },
   created() {
     if (this.showPickerModel && this.defaultDate) {
@@ -146,7 +137,7 @@ export default {
         "September",
         "October",
         "November",
-        "December"
+        "December",
       ], //英文 月份
       enShortWeeks: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], //英文 周
       days: [], //某年某月的日期数组，如[0,0,1,2,3,4,....,31]
@@ -159,7 +150,7 @@ export default {
       day: null,
       currentDay: null,
       week: null,
-      changeContentFlag: false //切换主体内容显示为日期或年份
+      changeContentFlag: false, //切换主体内容显示为日期或年份
     };
   },
   watch: {
@@ -167,40 +158,46 @@ export default {
       //监测showPickerModel的变动
       if (newVal) {
         //showPickerModel由false变为true
-        if (
-          this.defaultDate >= this.startDate &&
-          this.defaultDate <= this.endDate
-        ) {
+        if (this.defaultDate >= this.startDate && this.defaultDate <= this.endDate) {
           //默认时间在起止时间之内
           this.initDate(this.defaultDate); //初始化
         } else {
           this.$emit("cancel"); //触发取消事件
         }
       }
-    }
+    },
   },
   computed: {
-    isEnglish() { //语言版本是否为英语
+    isEnglish() {
+      //语言版本是否为英语
       return this.language == "English";
     },
-    currentDateText(){  //当前日期显示文本
-      if(this.isEnglish){
-        if(this.enMonth[this.currentMonth]){
-          return (this.enShortWeeks[this.weeks.indexOf(this.week)])+", "+this.enMonth[this.currentMonth].substring(0,3)+" "+this.currentDay;
-        }else{
-          return (this.enShortWeeks[this.weeks.indexOf(this.week)])+", ";
+    currentDateText() {
+      //当前日期显示文本
+      if (this.isEnglish) {
+        if (this.enMonth[this.currentMonth]) {
+          return (
+            this.enShortWeeks[this.weeks.indexOf(this.week)] +
+            ", " +
+            this.enMonth[this.currentMonth].substring(0, 3) +
+            " " +
+            this.currentDay
+          );
+        } else {
+          return this.enShortWeeks[this.weeks.indexOf(this.week)] + ", ";
         }
-      }else{
-        return (this.currentMonth+1)+"月"+this.currentDay+"日周"+this.week;
+      } else {
+        return this.currentMonth + 1 + "月" + this.currentDay + "日周" + this.week;
       }
     },
-    currentMonthText(){  //当前月份显示文本
-      if(this.isEnglish){
-        return this.enMonth[this.month]+" "+this.year
-      }else{
-        return this.year+"年"+(this.month+1)+"月"
+    currentMonthText() {
+      //当前月份显示文本
+      if (this.isEnglish) {
+        return this.enMonth[this.month] + " " + this.year;
+      } else {
+        return this.year + "年" + (this.month + 1) + "月";
       }
-    }
+    },
   },
   methods: {
     handleCancel() {
@@ -211,10 +208,7 @@ export default {
     handleConfirm() {
       //处理确认点击
       this.changeContentFlag = false; //关闭年份选择面板
-      this.$emit(
-        "confirm",
-        this.currentYear + "-" + (this.currentMonth + 1) + "-" + this.currentDay
-      ); //触发确认事件，参数为选择的日期，如2019-7-7
+      this.$emit("confirm", this.currentYear + "-" + (this.currentMonth + 1) + "-" + this.currentDay); //触发确认事件，参数为选择的日期，如2019-7-7
     },
     initDate(defaultDate) {
       //初始化日期
@@ -223,11 +217,7 @@ export default {
       this.currentDay = this.day = defaultDate.getDate(); //日
       this.week = this.weeks[defaultDate.getDay()]; //周
       this.years = [];
-      for (
-        let i = 0;
-        i <= this.endDate.getFullYear() - this.startDate.getFullYear();
-        i++
-      ) {
+      for (let i = 0; i <= this.endDate.getFullYear() - this.startDate.getFullYear(); i++) {
         this.years.push(Number(this.startDate.getFullYear()) + i); //初始化年份列表
       }
       this.updateDate(this.year, this.month); //根据年月更新日期
@@ -279,10 +269,7 @@ export default {
       ) {
         return; //不在指定范围的，属于禁用的日期不做点击处理
       }
-      if (
-        typeof this.disableDate == "function" &&
-        this.disableDate(this.year + "-" + (this.month + 1) + "-" + item)
-      ) {
+      if (typeof this.disableDate == "function" && this.disableDate(this.year + "-" + (this.month + 1) + "-" + item)) {
         ////禁用函数存在，符合禁用规则
         return;
       }
@@ -310,9 +297,7 @@ export default {
         //更新到当前点击日期
         if (
           typeof this.disableDate == "function" &&
-          this.disableDate(
-            item + "-" + (this.currentMonth + 1) + "-" + this.day
-          )
+          this.disableDate(item + "-" + (this.currentMonth + 1) + "-" + this.day)
         ) {
           //禁用函数存在，符合禁用规则
           this.year = item; //更新切换面板年月
@@ -361,8 +346,9 @@ export default {
         });
       }
     },
-    activeDay(day){  //选中日期
-      return (day==this.currentDay&&this.month==this.currentMonth)&&!this.dayIsDisable(day)
+    activeDay(day) {
+      //选中日期
+      return day == this.currentDay && this.month == this.currentMonth && !this.dayIsDisable(day);
     },
     dayIsDisable(item) {
       //禁用日期，返回true为禁用
@@ -370,147 +356,29 @@ export default {
         return false;
       }
       if (
-        this.startDate -
-          new Date(this.year + "-" + (this.month + 1) + "-" + item) >
-          0 ||
-        new Date(this.year + "-" + (this.month + 1) + "-" + item) -
-          this.endDate >
-          0
+        this.startDate - new Date(this.year + "-" + (this.month + 1) + "-" + item) > 0 ||
+        new Date(this.year + "-" + (this.month + 1) + "-" + item) - this.endDate > 0
       ) {
         //日期不在起止日期范围禁用
         return true;
       } else if (this.disableDate && typeof this.disableDate == "function") {
         //禁用函数存在，符合函数规则，禁用
-        if (this.disableDate(this.year + "-" + (this.month + 1) + "-" + item))
-          return true;
+        if (this.disableDate(this.year + "-" + (this.month + 1) + "-" + item)) return true;
       }
       return false;
     },
-    dayIsWeekend(index) {  //是否为周末
+    dayIsWeekend(index) {
+      //是否为周末
       if (index % 7 == 0 || index % 7 == 6) {
         return true;
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
- 
-<style>
-@media (min-width: 240px) {
-  html {
-    font-size: 32px;
-  }
-}
-@media (min-width: 320px) {
-  html {
-    font-size: 42.66667px;
-  }
-}
-@media (min-width: 360px) {
-  html {
-    font-size: 48px;
-  }
-}
-@media (min-width: 375px) {
-  html {
-    font-size: 50px;
-  }
-}
-@media (min-width: 384px) {
-  html {
-    font-size: 51.2px;
-  }
-}
-@media (min-width: 411px) {
-  html {
-    font-size: 54.8px;
-  }
-}
-@media (min-width: 414px) {
-  html {
-    font-size: 55.2px;
-  }
-}
-@media (min-width: 424px) {
-  html {
-    font-size: 56.53333px;
-  }
-}
-@media (min-width: 480px) {
-  html {
-    font-size: 64px;
-  }
-}
-@media (min-width: 540px) {
-  html {
-    font-size: 72px;
-  }
-}
-@media (min-width: 640px) {
-  html {
-    font-size: 85.33333px;
-  }
-}
-@media (min-width: 720px) {
-  html {
-    font-size: 96px;
-  }
-}
-@media (min-width: 750px) {
-  html {
-    font-size: 100px;
-  }
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 102.4px;
-  }
-}
-@media (min-width: 800px) {
-  html {
-    font-size: 106.66667px;
-  }
-}
-@media (min-width: 980px) {
-  html {
-    font-size: 130.66667px;
-  }
-}
-@media (min-width: 1024px) {
-  html {
-    font-size: 136.53333px;
-  }
-}
-@media (min-width: 1080px) {
-  html {
-    font-size: 144px;
-  }
-}
-@media (min-width: 1152px) {
-  html {
-    font-size: 153.6px;
-  }
-}
-@media (min-width: 1366px) {
-  html {
-    font-size: 182.13333px;
-  }
-}
-@media (min-width: 1440px) {
-  html {
-    font-size: 192px;
-  }
-}
-@media (min-width: 2160px) {
-  html {
-    font-size: 288px;
-  }
-}
-html {
-  font-family: font-apple-system, system-ui, BlinkMacSystemFont, Helvetica Neue,
-    PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-}
+
+<style scoped>
 * {
   margin: 0;
   padding: 0;
@@ -532,12 +400,11 @@ ul {
   align-items: center;
 }
 .mdp_container {
-  width: 80%;
-  height: 10rem;
+  width: 22rem;
   background-color: #fff;
 }
 .mdp_header {
-  height: 2rem;
+  height: 10%;
   background-color: #dd2727;
   box-sizing: border-box;
   color: #eee;
@@ -545,11 +412,11 @@ ul {
   font-size: 0;
 }
 .mdp_current_year {
-  font-size: 0.3125rem;
+  font-size: 0.9rem;
   display: inline-block;
 }
 .mdp_current_date {
-  font-size: 0.6125rem;
+  font-size: 1rem;
   display: inline-block;
 }
 .mdp_current_year.active,
@@ -558,7 +425,7 @@ ul {
 }
 .mdp_content {
   width: 100%;
-  height: 6.8rem;
+  height: 80%;
   background: #fff;
 }
 .mdp_date_content {
@@ -571,14 +438,14 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 1.2rem;
   font-weight: 500;
-  font-size: 0.3125rem;
+  font-size: 0.9rem;
+  margin: 0.5rem 0.3rem 0.7rem 0.3rem;
 }
 .mdp_arrow {
   display: inline-block;
-  width: 0.16rem;
-  height: 0.16rem;
+  width: 0.5rem;
+  height: 0.5rem;
   border-top: 0.04rem solid #000;
   border-left: 0.04rem solid #000;
 }
@@ -595,12 +462,12 @@ ul {
   width: 100%;
   display: flex;
   align-items: center;
-  font-size: 0.25rem;
+  font-size: 0.8rem;
   color: #888;
 }
 .mdp_week {
   width: 14.2%;
-  height: 0.8rem;
+  height: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -609,7 +476,7 @@ ul {
   color: #dd2727;
 }
 .mdp_pick_day {
-  font-size: 0.25rem;
+  font-size: 0.9rem;
   width: 100%;
   display: flex;
   align-items: center;
@@ -617,7 +484,8 @@ ul {
 }
 .mdp_day {
   width: 14.2%;
-  height: 0.8rem;
+  height: 3.124rem;
+  height: calc(width);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -638,7 +506,7 @@ ul {
 }
 .mdp_year_content {
   width: 100%;
-  height: 100%;
+  height: 20rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -646,23 +514,22 @@ ul {
 }
 .mdp_year_content ul {
   width: 100%;
-  height: 100%;
+  height: 20rem;
   overflow: scroll;
-  font-size: 0.3125rem;
+  font-size: 0.9rem;
 }
 .mdp_year_content ul li {
-  padding: 0.4rem 0;
-  height: 1rem;
+  padding: 0.25rem 0;
   text-align: center;
   box-sizing: border-box;
 }
 .mdp_year_content ul li.active {
-  font-size: 0.465rem;
+  font-size: 1rem;
   color: #dd2727;
 }
 .mdp_operate_button {
   margin: 0 0.6rem;
-  height: 1.2rem;
+  height: 2.5rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -673,7 +540,7 @@ ul {
   color: #dd2727;
   background-color: #fff;
   font-weight: 500;
-  font-size: 0.275rem;
+  font-size: 1rem;
 }
 .mdp_cancel_button {
   margin-right: 0.6rem;
